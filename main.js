@@ -149,8 +149,8 @@ var dropdown = d3.select("#dropdown_container")
               .style("left", (d3.event.pageX + 5) + "px")
               .style("top", (window.innerHeight - 60) + "px");
             tooltipBox.html("Date: " + d.date + "<br/>Record Precipitation: " + d.record_precipitation);
-            tooltipBox.style("left", (d3.event.pageX + 5) + "px")
-                .style("top", (yScale(Math.max(d.record_precipitation, yMin)) + margin.top + 100) + "px");
+            tooltipBox.style("left", (d3.event.pageX + 5) + "px");
+                
            
           })
         .on("mouseout", function(d) {
