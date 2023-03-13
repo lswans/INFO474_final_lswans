@@ -1,4 +1,24 @@
-// Create the dropdown menu
+//Plot dimensions
+var width = 600;
+var height = 400;
+
+var svg = d3.select("body")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+var plotWidth = width - margin.left - margin.right;
+var plotHeight = height - margin.top - margin.bottom;
+
+// Define the x and y scales
+var xScale = d3.scaleTime().range([0, plotWidth]);
+var yScale = d3.scaleLinear().range([plotHeight, 0]);
+
+var xAxis = d3.axisBottom(xScale);
+var yAxis = d3.axisLeft(yScale);
+
+//dropdown menu
 var datasets = ["KSEA.csv", "KNYC.csv", "IND.csv"];
 let selectedFile = "KSEA.csv";
 
@@ -17,7 +37,7 @@ var dropdown = d3.select("#dropdown_container")
     d3.selectAll("svg").selectAll("g").remove();
     selectedFile = d3.event.target.value;
     d3.csv(selectedFile).then(function(data) {
-        // Format the data
+
         data.forEach(function(d) {
           d.date = new Date(d.date);
           d.actual_precipitation = +d.actual_precipitation;
@@ -25,16 +45,15 @@ var dropdown = d3.select("#dropdown_container")
           d.record_precipitation = +d.record_precipitation;
         });
       
-        // Set the domain of the x and y scales
+        // x and y scales
         xScale.domain(d3.extent(data, function(d) { return d.date; }));
         yScale.domain([0, d3.max(data, function(d) { return Math.max(d.actual_precipitation, d.average_precipitation, d.record_precipitation); })]);
       
     
-        // Add the actual precipitation line
+        // actual precipitation
       var actualPrecipitationLine = d3.line()
       .x(function(d) { return xScale(d.date); })
       .y(function(d) { return yScale(d.actual_precipitation); })
-      .defined(function(d) { return d.actual_precipitation != null; }); // added to remove undefined values
       
       svg.append("path")
         .data([data])
@@ -74,11 +93,10 @@ var dropdown = d3.select("#dropdown_container")
 
       
       
-      // Add the average precipitation line
+      // average precipitation
       var averagePrecipitationLine = d3.line()
       .x(function(d) { return xScale(d.date); })
       .y(function(d) { return yScale(d.average_precipitation); })
-      .defined(function(d) { return d.average_precipitation != null; }); // added to remove undefined values
       
       svg.append("path")
         .data([data])
@@ -117,11 +135,11 @@ var dropdown = d3.select("#dropdown_container")
   });
 
       
-      // Add the record precipitation line
+      // record precipitation line
       var recordPrecipitationLine = d3.line()
       .x(function(d) { return xScale(d.date); })
       .y(function(d) { return yScale(d.record_precipitation); })
-      .defined(function(d) { return d.record_precipitation != null; }); // added to remove undefined values
+      
       
       svg.append("path")
         .data([data])
@@ -191,26 +209,3 @@ var dropdown = d3.select("#dropdown_container")
   .attr("value", function(d) { return d; })
   .text(function(d) { return d; });
       
-
-// Define the dimensions of the SVG canvas
-var width = 600;
-var height = 400;
-
-// Create the SVG canvas
-var svg = d3.select("body")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height);
-
-// Set the margins for the plot area
-var margin = { top: 20, right: 20, bottom: 30, left: 50 };
-var plotWidth = width - margin.left - margin.right;
-var plotHeight = height - margin.top - margin.bottom;
-
-// Define the x and y scales
-var xScale = d3.scaleTime().range([0, plotWidth]);
-var yScale = d3.scaleLinear().range([plotHeight, 0]);
-
-// Define the x and y axes
-var xAxis = d3.axisBottom(xScale);
-var yAxis = d3.axisLeft(yScale);
